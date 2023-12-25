@@ -1,0 +1,14 @@
+name: HQCheque
+main: kr.cosine.cheque.HQCheque
+version: 1.0.0
+api-version: 1.13
+author: Cosine_A
+depend:
+  - Vault
+
+commands:
+  수표:
+    description: 수표 발행 명령어입니다.
+  수표관리:
+    description: 수표 관리 명령어입니다.
+    permission: op
