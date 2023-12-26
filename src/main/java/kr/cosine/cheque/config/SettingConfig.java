@@ -6,26 +6,32 @@ import kr.cosine.cheque.enums.Notice;
 import kr.cosine.cheque.enums.Parse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemFlag;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SettingConfig {
 
     private static final String PATH = "config.yml";
 
+    private final int version;
     private final Logger logger;
 
     private final File file;
     private final YamlConfiguration config;
 
     public SettingConfig(HQCheque plugin) {
+        version = getVersion(plugin.getServer());
         logger = plugin.getLogger();
         File newFile = new File(plugin.getDataFolder(), PATH);
         if (!newFile.exists() && plugin.getResource(PATH) != null) {
@@ -45,28 +51,39 @@ public class SettingConfig {
     private void loadChequeSection() {
         ConfigurationSection chequeSection = config.getConfigurationSection("cheque");
         if (chequeSection == null) return;
-        String parserText = chequeSection.getString("parse");
         Parse parse;
         try {
+            String parserText = chequeSection.getString("parse", "DISPLAY");
             parse = Parse.getParse(parserText);
         } catch (IllegalArgumentException e) {
             parse = Parse.DISPLAY;
         }
-        String materialText = chequeSection.getString("material");
-        if (materialText == null) {
-            materialText = "PAPER";
-        }
+        String materialText = chequeSection.getString("material", "PAPER");
         Material material = Material.getMaterial(materialText);
         if (material == null) {
             material = Material.PAPER;
         }
+        short durability = (short) chequeSection.getInt("durability", 0);
         String displayName = applyColor(chequeSection.getString("display-name", "&e[수표] &f%money%원"));
         List<String> lore = chequeSection.getStringList("lore")
             .stream()
             .map(this::applyColor)
             .collect(Collectors.toList());
-        System.out.println(lore);
-        cheque = new Cheque(parse, material, displayName, lore);
+        boolean unbreakable = chequeSection.getBoolean("unbreakable", false);
+        ItemFlag[] itemFlags = chequeSection.getStringList("item-flags")
+            .stream()
+            .map(ItemFlag::valueOf)
+            .toArray(ItemFlag[]::new);
+        int customModelData = chequeSection.getInt("custom-model-data", 0);
+        cheque = new Cheque(version, parse, material, durability, displayName, lore, unbreakable, itemFlags, customModelData);
+    }
+
+    private int getVersion(Server server) {
+        String version = server.getClass().getName().replace(".", ",").split(",")[3];
+        Pattern pattern = Pattern.compile("v\\d+_(\\d+)_R\\d+");
+        Matcher matcher = pattern.matcher(version);
+        if (!matcher.find()) throw new NullPointerException();
+        return Integer.parseInt(matcher.group(1));
     }
 
     private void loadMessageSection() {

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "kr.cosine.cheque"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc", "spigot-api", "1.12.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", "1.14-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl", "VaultAPI", "1.7")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -25,6 +25,6 @@ tasks {
     }
     jar {
         archiveFileName.set("${rootProject.name}-${rootProject.version}.jar")
-        destinationDirectory.set(file("D:\\서버\\1.12.2 - 개발\\plugins"))
+        destinationDirectory.set(file("D:\\서버\\1.20.1 - 개발\\plugins"))
     }
 }

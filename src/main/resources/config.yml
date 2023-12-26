@@ -2,10 +2,22 @@ cheque:
   # %money%를 이름에 적었으면 DISPLAY, 로어에 적었으면 LORE
   # 수표를 발행할 때 불필요한 파싱을 방지하기 위한 설정입니다.
   parse: DISPLAY
+  # 재료
   material: PAPER
+  # 내구도
+  durability: 0
+  # 이름
   display-name: "&e[수표] &f%money%원"
+  # 로어
   lore:
     - "&7우클릭 시 수표를 사용합니다."
+  # 파괴되지 않음
+  unbreakable: false
+  # 아이템 플래그
+  # [1.12.2] ItemFlag: https://helpch.at/docs/1.12.2/index.html?org/bukkit/inventory/ItemFlag.html
+  item-flags: []
+  # 커스텀 모델 데이터 (1.14 이상부터 지원)
+  custom-model-data: 0
 
 message:
   # 금액 입력 안했을 때
